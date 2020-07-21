@@ -46,7 +46,7 @@
                         <div class="control-group {!! $errors->has('image.*') ? 'has-error' : '' !!}">
                             <label for="icon">{{ __('pwa::app.admin.push-notification.icon') }}</label>
 
-                            <image-wrapper :button-label="'{{ __('admin::app.catalog.products.add-image-btn-title') }}'" input-name="image" :multiple="false" :images='"{{ $pushnotification->imageurl_url }}"'></image-wrapper>
+                            <image-wrapper :button-label="'{{ __('pwa::app.admin.push-notification.add-image-btn-title') }}'" input-name="image" :multiple="false" :images='"{{ $pushnotification->imageurl_url }}"'></image-wrapper>
 
                             <span class="control-error" v-if="{!! $errors->has('image.*') !!}">
                                 @foreach ($errors->get('image.*') as $key => $message)

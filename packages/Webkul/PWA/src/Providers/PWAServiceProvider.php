@@ -6,11 +6,12 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\AliasLoader;
 use Webkul\Checkout\Facades\Cart as CartFacade;
+use Webkul\Shipping\Facades\Shipping as ShippingFacade;
 
 /**
  * PWA service provider
  *
- * @author    Vivek Sharma <viveksh047@webkul.com>
+ * @author    Aayush Bhatt <aayush.bhatt172@webkul.com>
  * @copyright 2018 Webkul Software Pvt Ltd (http://www.webkul.com)
  */
 class PWAServiceProvider extends ServiceProvider
@@ -85,6 +86,16 @@ class PWAServiceProvider extends ServiceProvider
      */
     protected function registerFacades()
     {
+        $loader = AliasLoader::getInstance();
+
+        $loader->alias('shipping', ShippingFacade::class);
+
+        $this->app->singleton('shipping', function () {
+            return new Shipping();
+        });
+
+        $this->app->bind('shipping', 'Webkul\PWA\Shipping');
+
         $loader = AliasLoader::getInstance();
 
         $loader->alias('cart', CartFacade::class);

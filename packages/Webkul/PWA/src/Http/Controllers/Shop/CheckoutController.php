@@ -206,18 +206,17 @@ class CheckoutController extends Controller
             $type = $cartItems->type;
         }
 
-        if (! $cart->shipping_address) {
-            if ($type != 'virtual' && $type != 'booking' && $type != 'downloadable') {
+        if ($type != 'virtual') {
+            if (! $cart->shipping_address) {
                 throw new \Exception(trans('Please check shipping address.'));
             }
         }
-
         if (! $cart->billing_address) {
             throw new \Exception(trans('Please check billing address.'));
         }
 
-        if (! $cart->selected_shipping_rate) {
-            if ($type != 'virtual' && $type != 'booking' && $type != 'downloadable') {
+        if ($type != 'virtual') {
+            if (! $cart->selected_shipping_rate) {
                 throw new \Exception(trans('Please specify shipping method.'));
             }
         }

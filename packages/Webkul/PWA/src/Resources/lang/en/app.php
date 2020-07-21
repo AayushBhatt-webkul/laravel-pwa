@@ -34,7 +34,8 @@ return [
             'description' => 'Description',
             'target-url' => 'Target URL',
             'icon' => 'Icon',
-            'success-notification' => 'Success: Push notification sent successfully.'
+            'success-notification' => 'Success: Push notification sent successfully.',
+            'add-image-btn-title' => 'Add Image'
         ],
         'datagrid' => [
             'id' => 'ID',

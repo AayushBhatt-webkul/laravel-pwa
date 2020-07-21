@@ -5,6 +5,7 @@ namespace Webkul\PWA\Http\Controllers\Shop;
 use Webkul\API\Http\Controllers\Shop\Controller;
 use Webkul\Product\Repositories\ProductRepository;
 use Webkul\PWA\Http\Resources\Catalog\Product as ProductResource;
+use DB;
 
 /**
  * Product controller
@@ -50,9 +51,23 @@ class ProductController extends Controller
      */
     public function get($id)
     {
-        return new ProductResource(
-                $this->productRepository->findOrFail($id)
+        $products = $this->productRepository->findOrFail($id);
+
+
+        if ($products->type == 'grouped') {
+            $groupedProducts = $products->grouped_products()->get();
+
+            foreach ($groupedProducts as $groupedProduct) {
+               $grpProduct[] = $this->productRepository->findOrFail($groupedProduct->associated_product_id);
+            }
+
+            return [$grpProduct, $products];
+
+        } else {
+            return new ProductResource(
+                $products
             );
+        }
     }
 
     /**

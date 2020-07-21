@@ -27,7 +27,11 @@
                     :form-data="formData">
                 </configurable-options>
 
+<!-- Grouped Products -->
+                <div v-if="product.type == 'grouped'">
 
+                </div>
+<!-- end -->
                 <div class="quantity-container">
                     <label>{{ $t('Quantity') }}</label>
 
@@ -79,7 +83,6 @@
     import Stock               from './stock';
     import SocialLinks         from './social-links';
     import ConfigurableOptions from './configurable-options';
-    import BundleOptions       from './bundle-options';
     import Reviews             from './reviews';
     import Attributes          from './attributes';
 
@@ -94,7 +97,6 @@
             Stock,
             SocialLinks,
             ConfigurableOptions,
-            BundleOptions,
             Reviews,
             Attributes
         },
@@ -133,15 +135,12 @@
 
                 this.$http.get('/api/products/' + productId)
                     .then(function(response) {
-
+                        console.log(response.data);
+                        return false;
                         this_this.product = response.data.data;
+                        // if (this_this.product.type == 'grouped') {
 
-                        if (this_this.product.type == 'bundle') {
-                            this,$http.get('/api/products')
-                                .then(function(response) {
-                                    console.log('aayush');
-                                })
-                        }
+                        // }
 
                         EventBus.$emit('hide-ajax-loader');
                     })
@@ -172,7 +171,6 @@
                         // this_this.$router.push({name: 'cart'})
                     })
                     .catch(function (error) {
-                        this_this.$toasted.show('Options are not available. Add this product to cart from bagisto.', { type: 'error' })
                     })
             },
 
@@ -191,7 +189,6 @@
                         this_this.$router.push({name: 'cart'})
                     })
                     .catch(function (error) {
-                        this_this.$toasted.show('Options are not available. Add this product to cart from bagisto.', { type: 'error' })
                     })
             }
         }
