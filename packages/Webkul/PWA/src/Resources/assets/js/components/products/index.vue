@@ -28,16 +28,37 @@
                 </configurable-options>
 
 <!-- Grouped Products -->
-                <div v-if="product.type == 'grouped'">
+                <div class="grpProduct" v-if="product.type == 'grouped'">
+                    <div v-for="groupProduct in groupProducts">
+                       <h2 class="product-name">{{ groupProduct.name }}</h2><br>
+                       <div>{{ groupProduct.price }}</div><br>
+                        <div class="quantity">
+
+                            <button type="button" style="padding: 0px;" class="btn btn-black decrease-qty"
+                                @click="formData.quantity > 1 ? formData.quantity-- : formData.quantity">
+                                <i class="icon minus-icon"></i>
+                            </button>
+
+                            <button style="padding: 0px;position: absolute;margin-left: 60px;" type="button" class="btn btn-black increase-qty" @click="formData.quantity++">
+                                <i class="icon plus-icon"></i>
+                            </button>
+
+                            <div style="margin-left: 37px; margin-top: -23px;" class="quantity-label">
+                                {{ $t('number Units', {number: formData.quantity}) }}
+                            </div>
+
+                        </div>
+                       <br><br>
+                    </div>
 
                 </div>
-<!-- end -->
-                <div class="quantity-container">
+<!-- Grouped Products end -->
+                <div v-else class="quantity-container">
                     <label>{{ $t('Quantity') }}</label>
 
                     <div class="quantity">
                         <button type="button" class="btn btn-black decrease-qty"
-                            @click="formData.quantity > 1 ? formData.quantity-- : formData.quantity">
+                            @click="formDataGrouped.quantity > 1 ? formDataGrouped.quantity-- : formDataGrouped.quantity">
                             <i class="icon minus-icon"></i>
                         </button>
 
@@ -45,7 +66,7 @@
                             {{ $t('number Units', {number: formData.quantity}) }}
                         </div>
 
-                        <button type="button" class="btn btn-black increase-qty" @click="formData.quantity++">
+                        <button type="button" class="btn btn-black increase-qty" @click="formDataGrouped.quantity++">
                             <i class="icon plus-icon"></i>
                         </button>
                     </div>
@@ -105,6 +126,8 @@
 			return {
 				product: null,
 
+                groupProducts: null,
+
                 formData: {
                     product: this.$route.params.id,
 
@@ -113,6 +136,16 @@
                     super_attribute: {},
 
                     selected_configurable_option: 0
+                },
+
+                formDataGrouped: {
+                    is_buy_now: 0,
+
+                    product_id: this.$route.params.id,
+
+                    quantity: 1,
+
+                    qty: {}
                 }
             }
         },
@@ -135,12 +168,12 @@
 
                 this.$http.get('/api/products/' + productId)
                     .then(function(response) {
-                        console.log(response.data);
-                        return false;
-                        this_this.product = response.data.data;
-                        // if (this_this.product.type == 'grouped') {
+                        this_this.product = response.data[0];
 
-                        // }
+
+                        if (this_this.product.type == 'grouped') {
+                            this_this.groupProducts = response.data[1];
+                        }
 
                         EventBus.$emit('hide-ajax-loader');
                     })
@@ -156,22 +189,40 @@
             },
 
             addToCart () {
+
+
                 var this_this = this;
 
                 EventBus.$emit('show-ajax-loader');
+                if (this.product.type != 'grouped') {
+                    this.$http.post("/api/checkout/cart/add/" + this.$route.params.id, this.formData)
+                        .then(function(response) {
+                            this_this.$toasted.show(response.data.message, { type: 'success' })
 
-                this.$http.post("/api/checkout/cart/add/" + this.$route.params.id, this.formData)
-                    .then(function(response) {
-                        this_this.$toasted.show(response.data.message, { type: 'success' })
+                            EventBus.$emit('hide-ajax-loader');
 
-                        EventBus.$emit('hide-ajax-loader');
+                            EventBus.$emit('checkout.cart.changed', response.data.data);
 
-                        EventBus.$emit('checkout.cart.changed', response.data.data);
+                            // this_this.$router.push({name: 'cart'})
+                        })
+                        .catch(function (error) {
+                        })
+                } else {
+                    console.log('here');
+                    return false;
+                        this.$http.post("/api/checkout/cart/add/" + this.$route.params.id, this.formData)
+                        .then(function(response) {
+                            this_this.$toasted.show(response.data.message, { type: 'success' })
 
-                        // this_this.$router.push({name: 'cart'})
-                    })
-                    .catch(function (error) {
-                    })
+                            EventBus.$emit('hide-ajax-loader');
+
+                            EventBus.$emit('checkout.cart.changed', response.data.data);
+
+                            // this_this.$router.push({name: 'cart'})
+                        })
+                        .catch(function (error) {
+                        })
+                }
             },
 
             buyNow () {
@@ -287,5 +338,13 @@
             float: right;
             width: 50%;
         }
+    }
+
+    .grpProduct {
+        width: 90%;
+        border: 1px solid black;
+        border-radius: 0.5em;
+        padding: 10px;
+        margin: 10px;
     }
 </style>

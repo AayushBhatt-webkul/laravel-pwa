@@ -61,12 +61,12 @@ class ProductController extends Controller
                $grpProduct[] = $this->productRepository->findOrFail($groupedProduct->associated_product_id);
             }
 
-            return [$grpProduct, $products];
+            return [new ProductResource($products), $grpProduct];
 
         } else {
-            return new ProductResource(
+            return [new ProductResource(
                 $products
-            );
+            )];
         }
     }
 
