@@ -5,7 +5,6 @@ namespace Webkul\PWA\Http\Controllers\Shop;
 use Webkul\API\Http\Controllers\Shop\Controller;
 use Webkul\Product\Repositories\ProductRepository;
 use Webkul\PWA\Http\Resources\Catalog\Product as ProductResource;
-use DB;
 
 /**
  * Product controller
@@ -53,8 +52,8 @@ class ProductController extends Controller
     {
         $products = $this->productRepository->findOrFail($id);
 
-
         if ($products->type == 'grouped') {
+
             $groupedProducts = $products->grouped_products()->get();
 
             foreach ($groupedProducts as $groupedProduct) {
@@ -63,7 +62,18 @@ class ProductController extends Controller
 
             return [new ProductResource($products), $grpProduct];
 
+        } elseif ($products->type == 'downloadable') {
+
+            $downloadableProducts = $products->downloadable_links()->get();
+
+            foreach ($downloadableProducts as $downloadableProduct) {
+                $dwnProduct[] = $this->productRepository->findOrFail($downloadableProduct->product_id);
+            }
+
+            return [new ProductResource($products), $dwnProduct];
+
         } else {
+
             return [new ProductResource(
                 $products
             )];

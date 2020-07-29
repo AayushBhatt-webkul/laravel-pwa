@@ -53,7 +53,16 @@
 
                 </div>
 <!-- Grouped Products end -->
-                <div v-else class="quantity-container">
+
+<!-- Downloadable Products -->
+                <div class="grpProduct" v-if="product.type == 'downloadable'">
+                    <div v-for="downloadableProduct in downloadableProducts">
+                       <h2 class="product-name">{{ downloadableProduct.id }} + {{ downloadableProduct.price }}</h2><br><br>
+                    </div>
+
+                </div>
+<!-- Downloadable products end -->
+                <div v-if="product.type != 'grouped' && product.type != 'downloadable'" class="quantity-container">
                     <label>{{ $t('Quantity') }}</label>
 
                     <div class="quantity">
@@ -175,6 +184,15 @@
                             this_this.groupProducts = response.data[1];
                         }
 
+                        if (this_this.product.type == 'downloadable') {
+                            this_this.downloadableProducts = response.data[1];
+                            console.log(this_this.downloadableProducts);
+                        }
+
+                        if (this_this.product.type == 'bundle') {
+
+                        }
+
                         EventBus.$emit('hide-ajax-loader');
                     })
                     .catch(function (error) {});
@@ -190,12 +208,12 @@
 
             addToCart () {
 
-
                 var this_this = this;
 
                 EventBus.$emit('show-ajax-loader');
-                if (this.product.type != 'grouped') {
-                    this.$http.post("/api/checkout/cart/add/" + this.$route.params.id, this.formData)
+                if (this.product.type == 'grouped') {
+                    console.log(this.formDataGrouped);
+                    this.$http.post("/api/checkout/cart/add/" + this.$route.params.id, this.formDataGrouped)
                         .then(function(response) {
                             this_this.$toasted.show(response.data.message, { type: 'success' })
 
@@ -208,7 +226,7 @@
                         .catch(function (error) {
                         })
                 } else {
-                    console.log('here');
+
                     return false;
                         this.$http.post("/api/checkout/cart/add/" + this.$route.params.id, this.formData)
                         .then(function(response) {
