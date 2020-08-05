@@ -28,14 +28,15 @@
                 </configurable-options>
 
 <!-- Grouped Products -->
-                <div class="grpProduct" v-if="product.type == 'grouped'">
+               <!-- <div class="grpProduct" v-if="product.type == 'grouped'">
                     <div v-for="groupProduct in groupProducts">
                        <h2 class="product-name">{{ groupProduct.name }}</h2><br>
+
                        <div>{{ groupProduct.price }}</div><br>
                         <div class="quantity">
 
                             <button type="button" style="padding: 0px;" class="btn btn-black decrease-qty"
-                                @click="formData.quantity > 1 ? formData.quantity-- : formData.quantity">
+                                @click="formDataGrouped.quantity > 1 ? formDataGrouped.quantity-- : formData.quantity">
                                 <i class="icon minus-icon"></i>
                             </button>
 
@@ -51,23 +52,29 @@
                        <br><br>
                     </div>
 
-                </div>
+                </div> -->
 <!-- Grouped Products end -->
-
 <!-- Downloadable Products -->
-                <div class="grpProduct" v-if="product.type == 'downloadable'">
+                <!-- <div class="grpProduct" v-if="product.type == 'downloadable'">
                     <div v-for="downloadableProduct in downloadableProducts">
                        <h2 class="product-name">{{ downloadableProduct.id }} + {{ downloadableProduct.price }}</h2><br><br>
                     </div>
 
-                </div>
+                </div> -->
 <!-- Downloadable products end -->
+                <div v-if="product.type == 'grouped'">
+                   <!--<a class="btn btn-black buy-now-btn" v-bind:href="'../../'+product.url_key" >Add Options from Bagisto End</a>-->
+
+                   <a class="btn btn-black buy-now-btn" @click.prevent="addValuetoSession">Add Options from Bagisto End</a>
+
+                </div>
+
                 <div v-if="product.type != 'grouped' && product.type != 'downloadable'" class="quantity-container">
                     <label>{{ $t('Quantity') }}</label>
 
                     <div class="quantity">
                         <button type="button" class="btn btn-black decrease-qty"
-                            @click="formDataGrouped.quantity > 1 ? formDataGrouped.quantity-- : formDataGrouped.quantity">
+                            @click="formData.quantity > 1 ? formData.quantity-- : formData.quantity">
                             <i class="icon minus-icon"></i>
                         </button>
 
@@ -75,7 +82,7 @@
                             {{ $t('number Units', {number: formData.quantity}) }}
                         </div>
 
-                        <button type="button" class="btn btn-black increase-qty" @click="formDataGrouped.quantity++">
+                        <button type="button" class="btn btn-black increase-qty" @click="formData.quantity++">
                             <i class="icon plus-icon"></i>
                         </button>
                     </div>
@@ -148,7 +155,6 @@
                 },
 
                 formDataGrouped: {
-                    is_buy_now: 0,
 
                     product_id: this.$route.params.id,
 
@@ -259,6 +265,11 @@
                     })
                     .catch(function (error) {
                     })
+            },
+
+            addValuetoSession () {
+                localStorage.setItem("pwa product", true);
+                window.location.href = '../../'+this.product.url_key;
             }
         }
     }
