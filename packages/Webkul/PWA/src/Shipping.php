@@ -88,7 +88,8 @@ class Shipping
 
         $shippingAddress = $cart->shipping_address;
 
-        if ($type != 'virtual') {
+        if ($type != 'virtual'&& $type != 'downloadable' && $type != 'bundle') {
+
             foreach ($this->rates as $rate) {
                 $rate->cart_address_id = $shippingAddress->id;
 

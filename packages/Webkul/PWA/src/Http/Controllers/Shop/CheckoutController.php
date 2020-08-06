@@ -206,7 +206,7 @@ class CheckoutController extends Controller
             $type = $cartItems->type;
         }
 
-        if ($type != 'virtual') {
+        if ($type != 'virtual' && $type != 'downloadable' && $type != 'bundle') {
             if (! $cart->shipping_address) {
                 throw new \Exception(trans('Please check shipping address.'));
             }
@@ -215,7 +215,7 @@ class CheckoutController extends Controller
             throw new \Exception(trans('Please check billing address.'));
         }
 
-        if ($type != 'virtual') {
+        if ($type != 'virtual' && $type != 'downloadable' && $type != 'bundle') {
             if (! $cart->selected_shipping_rate) {
                 throw new \Exception(trans('Please specify shipping method.'));
             }

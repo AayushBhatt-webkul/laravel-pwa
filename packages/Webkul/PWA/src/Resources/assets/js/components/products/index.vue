@@ -62,14 +62,13 @@
 
                 </div> -->
 <!-- Downloadable products end -->
-                <div v-if="product.type == 'grouped'">
-                   <!--<a class="btn btn-black buy-now-btn" v-bind:href="'../../'+product.url_key" >Add Options from Bagisto End</a>-->
+                <div v-if="product.type == 'grouped' || product.type == 'booking' || product.type == 'downloadable' || product.type == 'bundle'">
 
                    <a class="btn btn-black buy-now-btn" @click.prevent="addValuetoSession">Add Options from Bagisto End</a>
 
                 </div>
 
-                <div v-if="product.type != 'grouped' && product.type != 'downloadable'" class="quantity-container">
+                <div v-if="product.type != 'grouped' && product.type != 'downloadable' && product.type != 'booking' && product.type != 'bundle'" class="quantity-container" >
                     <label>{{ $t('Quantity') }}</label>
 
                     <div class="quantity">
@@ -192,11 +191,6 @@
 
                         if (this_this.product.type == 'downloadable') {
                             this_this.downloadableProducts = response.data[1];
-                            console.log(this_this.downloadableProducts);
-                        }
-
-                        if (this_this.product.type == 'bundle') {
-
                         }
 
                         EventBus.$emit('hide-ajax-loader');
